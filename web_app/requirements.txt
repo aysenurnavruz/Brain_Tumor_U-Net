@@ -1,0 +1,9 @@
+pymysql
+Flask
+pyodbc
+Werkzeug
+numpy
+Pillow
+requests
+cryptography
+

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Segmentasyon</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    body {
+      background: #f1f1f1;
+    }
+    .centered-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+    }
+    .progress-container {
+      width: 100%;
+      max-width: 400px;
+      margin: 2.5rem auto 1.5rem auto;
+      background: #e0e0e0;
+      border-radius: 12px;
+      height: 32px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      display: block;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #5D5BD0 60%, #2D2A80 100%);
+      border-radius: 12px;
+      transition: width 0.3s cubic-bezier(.4,0,.2,1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.2rem;
+      opacity: 0.95;
+    }
+    .progress-text {
+      text-align: center;
+      color: #2D2A80;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 1.2rem;
+      margin-top: 2.5rem;
+      display: block;
+    }
+    .success-message {
+      color: #2D2A80;
+      font-weight: bold;
+      font-size: 1.3rem;
+      text-align: center;
+      margin-top: 2.5rem;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+    .segmentation-result-wrapper {
+      display: none;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 2rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    .segmentation-image-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.07);
+      padding: 1.5rem 2rem;
+      min-width: 260px;
+      margin-bottom: 1.5rem;
+    }
+    .segmentation-image-block img {
+      max-width: 320px;
+      max-height: 320px;
+      border-radius: 10px;
+      border: 2px solid #5D5BD0;
+      margin-bottom: 1rem;
+      background: #f9f9f9;
+    }
+    .segmentation-image-block .block-title {
+      font-weight: bold;
+      color: #2D2A80;
+      margin-bottom: 0.7rem;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+    .result_back {
+      text-align: center;
+      margin-top: 2rem;
+      display: none;
+    }
+    .result_back a, .result_back button {
+      background: #5D5BD0;
+      color: #fff;
+      padding: 0.7rem 2.2rem;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 1.1rem;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-block;
+    }
+    .result_back a:hover, .result_back button:hover {
+      background: #2D2A80;
+    }
+    @media (max-width: 900px) {
+      .segmentation-result-wrapper {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    .accuracy-bar-container {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .accuracy-label {
+      font-size: 1.1rem;
+      color: #2D2A80;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+    .accuracy-bar-bg {
+      background-color: #e0e0e0;
+      border-radius: 12px;
+      height: 10px;
+      overflow: hidden;
+    }
+    .accuracy-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #5D5BD0 60%, #2D2A80 100%);
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% if input_b64 and overlay_b64 %}
+<div class="centered-container" id="progressSection">
+  <div class="segmentation-result-wrapper" style="display:flex;">
+    <div class="segmentation-image-block">
+      <div class="block-title">Segmentasyon Sonucu (Tümör Alanı Kırmızı)</div>
+      <img src="data:image/png;base64,{{ overlay_b64 }}" alt="Segmentasyon Sonucu">
+    </div>
+  </div>
+  <div class="result_back" style="display:block; text-align:center; margin-top:2rem;">
+    <a href="{{ url_for('index') }}">Yeni bir görsel yükle</a>
+  </div>
+</div>
+{% else %}
+<div class="centered-container">
+  <div style="color:#2D2A80; font-size:1.2rem; font-weight:bold; margin-bottom:1.5rem;">
+    Henüz bir segmentasyon sonucu yok.<br>
+    Lütfen ana sayfadan bir görsel yükleyin.
+  </div>
+  <a href="{{ url_for('index') }}" class="btn">Ana Sayfa</a>
+</div>
+{% endif %}
+
+</body>
+</html> 

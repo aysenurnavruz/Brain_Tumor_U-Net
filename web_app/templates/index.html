@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Segmentasyon Projesi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Hoş Geldiniz, {{ user or session.user }}!</h2>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <form method="post" enctype="multipart/form-data" action="{{ url_for('segment') }}">
+            <label for="fileInput" class="custom-file-icon">
+                <i class="fa-regular fa-file-image"></i> Dosya Seç
+            </label>
+            <input type="file" id="fileInput" name="file" required hidden>
+            <button type="submit" class="btn">Dosya Yükle</button>
+        </form>
+        <a href="{{ url_for('logout') }}" class="btn logout-btn">Çıkış Yap</a>
+    </div>
+    <script>
+        // Seçilen dosya adını göstermek için (isteğe bağlı)
+        const fileInput = document.getElementById('fileInput');
+        const fileLabel = document.querySelector('.custom-file-icon');
+        fileInput.addEventListener('change', function() {
+            if (fileInput.files.length > 0) {
+                fileLabel.innerHTML = '<i class="fa-regular fa-file-image"></i> ' + fileInput.files[0].name;
+            } else {
+                fileLabel.innerHTML = '<i class="fa-regular fa-file-image"></i> Dosya Seç';
+            }
+        });
+    </script>
+</body>
+</html>

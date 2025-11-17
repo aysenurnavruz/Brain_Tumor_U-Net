@@ -1,0 +1,44 @@
+version: '3.8'
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: init
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - segmentasyon-net
+
+  ml_service:
+    build:
+      context: .
+      dockerfile: ml_service/Dockerfile
+    container_name: ml_service
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+    networks:
+      - segmentasyon-net
+
+  web_app:
+    build:
+      context: .
+      dockerfile: web_app/Dockerfile
+    container_name: web_app
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    depends_on:
+      - ml_service
+      - db
+    networks:
+      - segmentasyon-net
+
+networks:
+  segmentasyon-net:
+    driver: bridge

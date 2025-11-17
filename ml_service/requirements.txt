@@ -1,0 +1,6 @@
+Flask==2.2.2
+Werkzeug==2.3.8
+torch
+torchvision
+numpy
+Pillow
